@@ -1,0 +1,93 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+	id 'java'
+}
+
+group = 'com.enuri.brndmkr.sync'
+//version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '15'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+	jcenter()
+	maven { url 'http://192.168.213.82:8083/nexus/content/groups/public/' }
+}
+
+ext {
+	set('springCloudVersion', "2020.0.3")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-web'	//이걸 해야 웹으로 인식해서 종료 안되고 서비스로 떠있다.
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.batch:spring-batch-test'
+
+	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springframework.cloud:spring-cloud-config-client'
+	implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+
+	implementation 'com.querydsl:querydsl-jpa'
+	implementation 'com.querydsl:querydsl-core'
+	implementation 'com.querydsl:querydsl-apt'
+	implementation 'com.querydsl:querydsl-sql:4.4.0' 	// SQL 문법 사용가능(SQLExpressions)
+
+	implementation 'com.github.ben-manes.caffeine:caffeine:3.0.2'
+
+	annotationProcessor 'org.projectlombok:lombok:1.18.18'
+
+	compile 'com.enuri.gm.common:groupmatching-common:1.5.20211214.155519-SNAPSHOT'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
+
+def querydslDir = "src/main/generated"
+
+querydsl {
+  jpa = true
+  querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+    main.java.srcDirs = ['src/main/java', querydslDir]
+}
+
+configurations {
+  querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl {
+  options.annotationProcessorPath = configurations.querydsl
+}
+
+test {
+	println "**** OS : " + System.properties['os.name']
+
+	if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        jvmArgs '-Dlog.properties=C:/eclipse/workspace/BrandMakerSync/conf/log.properties'
+    } else {
+    	jvmArgs '-Dlog.properties=/data/groupMatching/BrandMakerSync/conf/log.properties'
+    }
+}
