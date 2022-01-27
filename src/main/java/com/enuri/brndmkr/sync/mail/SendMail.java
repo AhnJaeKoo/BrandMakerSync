@@ -17,11 +17,11 @@ public class SendMail {
 	public boolean setHtmlMailSendProc(SendMail_Data smDt) throws Exception{
 	    Properties props = new Properties();
 	    props.put("mail.transport.protocol", "smtp");
-	    props.put("mail.smtp.host", "mail.g2works.kr");
-	    props.put("mail.smtp.port", "587");
-	    props.put("mail.smtp.ssl.enable", "true");
-	    props.put("mail.smtp.auth", "true");
-	    props.put("mail.debug", "false");
+	    props.put("mail.smtp.host", "");
+	    props.put("mail.smtp.port", "");
+	    props.put("mail.smtp.ssl.enable", "");
+	    props.put("mail.smtp.auth", "");
+	    props.put("mail.debug", "");
 
 	    //보내는 사람 메일 주소
 	 	String sendAddr = smDt.getSendMailAddr();
@@ -34,7 +34,7 @@ public class SendMail {
 
 	    Authenticator auth = new Authenticator(){
 	        protected PasswordAuthentication getPasswordAuthentication() {
-	        	return new PasswordAuthentication("gm@enuri.com", "Enuri@211");
+	        	return new PasswordAuthentication("email","pw");
 	        }
 	    };
 
