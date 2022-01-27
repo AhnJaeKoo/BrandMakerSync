@@ -1,9 +1,9 @@
 spring:
   application:
     name: brndMkrSync
-  config:    import:    - "optional:configserver:http://192.168.213.82:8084/conf"
+  config:    import:    - "optional:configserver:http:///conf"
 
-#  cloud:#    config:#      enabled: false #      uri:#      - http://192.168.213.82:8084/conf
+#  cloud:#    config:#      enabled: false #      uri:#      - http:///conf
 #      fail-fast: true # config server 연결  
   redis:
     host: 127.0.0.1
